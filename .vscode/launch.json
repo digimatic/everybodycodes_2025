@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "name": "Rust: Debug Binary Quest",
+      "preLaunchTask": "cargo build",
+      "program": "${workspaceFolder}/target/debug/quest1",
+      "request": "launch",
+      "type": "codelldb"
+    }
+  ],
+  "version": "0.2.0"
+}
