@@ -1,0 +1,34 @@
+use std::fs;
+
+//#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE1_INPUT: &str = r"";
+
+    //#[test]
+    pub fn test1() {
+        let r = solve(EXAMPLE1_INPUT);
+        assert_eq!("", r);
+    }
+
+}
+
+fn solve(input_file: &str) -> String {
+    let lines = input_file.lines().collect::<Vec<_>>();
+    for line in lines {
+
+    }
+
+    "".to_string()
+}
+
+
+fn main() {
+    tests::test1();
+
+    // let input_file = fs::read_to_string("everybody_codes_e2025_q02_p1.txt").unwrap();
+    // let r = solve(&input_file);
+    // println!("{}", r);
+
+}
