@@ -5,3 +5,12 @@ version = 4
 [[package]]
 name = "everybodycodes_2025"
 version = "0.1.0"
+dependencies = [
+ "rational",
+]
+
+[[package]]
+name = "rational"
+version = "1.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1e6702f11abde76171c12e6231d246588cd8f12c68f582cdaa62cf2151b5aa2a"
