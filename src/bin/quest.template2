@@ -1,0 +1,63 @@
+use std::fs;
+use everybodycodes_2025::parse_utils;
+
+//#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const EXAMPLE1_INPUT: &str = r"";
+    #[allow(dead_code)]
+    const EXAMPLE2_INPUT: &str = r"";
+    #[allow(dead_code)]
+    const EXAMPLE3_INPUT: &str = r"";
+
+    //#[test]
+    pub fn test1() {
+        let r = solve(EXAMPLE1_INPUT);
+        assert_eq!("", r);
+    }
+
+    //#[test]
+    // pub fn test2() {
+    //     let r = solve2(EXAMPLE2_INPUT);
+    //     assert_eq!("", r);
+    // }
+
+    //#[test]
+    // pub fn test3() {
+    //     let r = solve3(EXAMPLE3_INPUT);
+    //     assert_eq!("", r);
+    // }
+}
+
+fn solve(input_file: &str) -> String {
+    // let lines = input_file.lines().collect::<Vec<_>>();
+    let xss = input_file
+        .lines()
+        .map(|x| parse_utils::parse_numbers(x))
+        .collect::<Vec<_>>();
+    for xs in xss {
+        for x in xs {
+            println!("{}", x);
+        }
+    }
+    "".to_string()
+}
+
+fn main() {
+    tests::test1();
+    // tests::test2();
+    // tests::test3();
+
+    let input_file = fs::read_to_string("everybody_codes_e2025_q06_p1.txt").unwrap();
+    let r = solve(&input_file);
+    println!("{}", r);
+
+    // let input_file = fs::read_to_string("everybody_codes_e2025_q06_p2.txt").unwrap();
+    // let r = solve(&input_file);
+    // println!("{}", r);
+
+    // let input_file = fs::read_to_string("everybody_codes_e2025_q06_p3.txt").unwrap();
+    // let r = solve(&input_file);
+    // println!("{}", r);
+}
