@@ -10,6 +10,8 @@ mod tests {
     const EXAMPLE2_INPUT: &str = r"";
     #[allow(dead_code)]
     const EXAMPLE3_INPUT: &str = r"";
+    #[allow(dead_code)]
+    const EXAMPLE4_INPUT: &str = r"";
 
     //#[test]
     pub fn test1() {
@@ -26,6 +28,12 @@ mod tests {
     //#[test]
     // pub fn test3() {
     //     let r = solve3(EXAMPLE3_INPUT);
+    //     assert_eq!("", r);
+    // }
+
+    //#[test]
+    // pub fn test4() {
+    //     let r = solve3(EXAMPLE4_INPUT);
     //     assert_eq!("", r);
     // }
 }
@@ -48,16 +56,17 @@ fn main() {
     tests::test1();
     // tests::test2();
     // tests::test3();
+    // tests::test4();
 
-    let input_file = fs::read_to_string("everybody_codes_e2025_q06_p1.txt").unwrap();
+    let input_file = fs::read_to_string("everybody_codes_e2025_q0?_p1.txt").unwrap();
     let r = solve(&input_file);
-    println!("{}", r);
+    println!("Part 1: {}", r);
 
-    // let input_file = fs::read_to_string("everybody_codes_e2025_q06_p2.txt").unwrap();
-    // let r = solve(&input_file);
-    // println!("{}", r);
+    // let input_file = fs::read_to_string("everybody_codes_e2025_q0?_p2.txt").unwrap();
+    // let r = solve2(&input_file);
+    // println!("Part 2: {}", r);
 
-    // let input_file = fs::read_to_string("everybody_codes_e2025_q06_p3.txt").unwrap();
-    // let r = solve(&input_file);
-    // println!("{}", r);
+    // let input_file = fs::read_to_string("everybody_codes_e2025_q0?_p3.txt").unwrap();
+    // let r = solve3(&input_file);
+    // println!("Part 3: {}", r);
 }
