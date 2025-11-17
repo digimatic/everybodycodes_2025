@@ -68,7 +68,9 @@ fn solve3(input_file: &str, max_distance: usize, repeat_count: usize) -> usize {
         let c = input[i % len];
         if c.is_ascii_lowercase() {
             let mentor = c.to_ascii_uppercase();
-            for j in (i.saturating_sub(max_distance))..=(i + max_distance).min(repeat_count * len - 1) {
+            for j in
+                (i.saturating_sub(max_distance))..=(i + max_distance).min(repeat_count * len - 1)
+            {
                 if input[j % len] == mentor {
                     count += 1;
                 }

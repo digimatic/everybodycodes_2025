@@ -141,7 +141,8 @@ fn solve(input_file: &str) -> String {
         .iter()
         .find(|name| check_name(name, &rules))
         .unwrap()
-        .iter().copied()
+        .iter()
+        .copied()
         .collect::<String>()
 }
 
