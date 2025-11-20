@@ -1,7 +1,7 @@
-use everybodycodes_2025::parse_utils;
-use std::{collections::HashSet, fs};
+use std::collections::HashSet;
+use std::fs;
 
-//#[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -38,30 +38,32 @@ mod tests {
 71222127839122222196
 56111126279711111517";
 
-    //#[test]
+    #[test]
     pub fn test1() {
         let r = solve(EXAMPLE1_INPUT);
         assert_eq!(16, r);
     }
 
-    //#[test]
+    #[test]
     pub fn test2() {
         let r = solve2(EXAMPLE2_INPUT);
         assert_eq!(58, r);
     }
 
-    //#[test]
+    #[test]
     pub fn test3() {
         let r = solve3(EXAMPLE3_INPUT);
         assert_eq!(14, r);
     }
 
-    //#[test]
+    #[test]
     pub fn test4() {
         let r = solve3(EXAMPLE4_INPUT);
         assert_eq!(136, r);
     }
 }
+
+type Vec2i = (i32, i32);
 
 fn solve(input_file: &str) -> usize {
     let xss = parse_map(input_file);
@@ -69,21 +71,19 @@ fn solve(input_file: &str) -> usize {
 }
 
 fn parse_map(input_file: &str) -> Vec<Vec<u8>> {
-    let xss = input_file
+    input_file
         .lines()
         .map(|x| {
             x.chars()
                 .map(|c| c.to_digit(10).unwrap() as u8)
                 .collect::<Vec<u8>>()
         })
-        .collect::<Vec<_>>();
-    xss
+        .collect::<Vec<_>>()
 }
-type vec2i = (i32, i32);
 
 fn walk_barrels(grid: &[Vec<u8>]) -> usize {
-    let p: vec2i = (0, 0);
-    let mut visited = HashSet::<vec2i>::new();
+    let p: Vec2i = (0, 0);
+    let mut visited = HashSet::<Vec2i>::new();
     let mut s = Vec::new();
     let w = grid[0].len() as i32;
     let h = grid.len() as i32;
@@ -109,13 +109,18 @@ fn walk_barrels(grid: &[Vec<u8>]) -> usize {
 }
 
 fn walk_barrels2(grid: &[Vec<u8>]) -> usize {
-    let p: vec2i = (0, 0);
-    let mut visited = HashSet::<vec2i>::new();
     let mut s = Vec::new();
     let w = grid[0].len() as i32;
     let h = grid.len() as i32;
-    s.push(p);
-    s.push((w-1, h-1));
+    s.push((0, 0));
+    s.push((w - 1, h - 1));
+    walk_concurrenty(grid, s)
+}
+
+fn walk_concurrenty(grid: &[Vec<u8>], mut s: Vec<(i32, i32)>) -> usize {
+    let mut visited = HashSet::<Vec2i>::new();
+    let w = grid[0].len() as i32;
+    let h = grid.len() as i32;
     while let Some(p) = s.pop() {
         if visited.contains(&p) {
             continue;
@@ -141,16 +146,57 @@ fn solve2(input_file: &str) -> usize {
     walk_barrels2(&xss)
 }
 
-fn solve3(input_file: &str) -> usize {
-    let xss = parse_map(input_file);
-    walk_barrels3(&xss)
-}
-fn main() {
-    tests::test1();
-    tests::test2();
-    tests::test3();
-    tests::test4();
+fn walk_barrels3(grid: &[Vec<u8>], p: Vec2i, visited: &mut HashSet<Vec2i>) -> usize {
+    visited.insert(p);
+    let w = grid[0].len() as i32;
+    let h = grid.len() as i32;
 
+    let mut visited_count = 1;
+    for (dx, dy) in [(-1, 0), (1, 0), (0, -1), (0, 1)] {
+        let p2 = (p.0 + dx, p.1 + dy);
+        if p2.0 >= 0
+            && p2.0 < w
+            && p2.1 >= 0
+            && p2.1 < h
+            && grid[p2.1 as usize][p2.0 as usize] <= grid[p.1 as usize][p.0 as usize]
+            && !visited.contains(&p2)
+        {
+            visited_count += walk_barrels3(grid, p2, visited);
+        }
+    }
+    visited_count
+}
+
+fn get_best_strike(
+    grid: &[Vec<u8>],
+    visited: HashSet<(i32, i32)>,
+) -> (usize, (i32, i32), HashSet<(i32, i32)>) {
+    let mut results = Vec::new();
+    for y in 0..grid.len() as i32 {
+        for x in 0..grid[0].len() as i32 {
+            let pos = (x, y);
+            let mut new_visited = visited.clone();
+            let strike = walk_barrels3(grid, pos, &mut new_visited);
+            results.push((strike, pos, new_visited));
+        }
+    }
+
+    results
+        .into_iter()
+        .max_by_key(|(strike, _, _)| *strike)
+        .unwrap()
+}
+
+fn solve3(input_file: &str) -> usize {
+    let grid = parse_map(input_file);
+    let best1 = get_best_strike(&grid, HashSet::new());
+    let best2 = get_best_strike(&grid, best1.2);
+    let best3 = get_best_strike(&grid, best2.2);
+
+    walk_concurrenty(&grid, vec![best1.1, best2.1, best3.1])
+}
+
+fn main() {
     let input_file = fs::read_to_string("everybody_codes_e2025_q12_p1.txt").unwrap();
     let r = solve(&input_file);
     println!("Part 1: {}", r);
@@ -159,7 +205,7 @@ fn main() {
     let r = solve2(&input_file);
     println!("Part 2: {}", r);
 
-    // let input_file = fs::read_to_string("everybody_codes_e2025_q12_p3.txt").unwrap();
-    // let r = solve3(&input_file);
-    // println!("Part 3: {}", r);
+    let input_file = fs::read_to_string("everybody_codes_e2025_q12_p3.txt").unwrap();
+    let r = solve3(&input_file);
+    println!("Part 3: {}", r);
 }
