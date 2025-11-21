@@ -1,7 +1,7 @@
 use everybodycodes_2025::parse_utils;
-use std::{collections::VecDeque, fs};
+use std::fs;
 
-//#[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
 
@@ -10,12 +10,11 @@ mod tests {
 47
 61
 67";
-    #[allow(dead_code)]
-    const EXAMPLE2_INPUT: &str = r"";
-    #[allow(dead_code)]
-    const EXAMPLE3_INPUT: &str = r"";
-    #[allow(dead_code)]
-    const EXAMPLE4_INPUT: &str = r"";
+    const EXAMPLE2_INPUT: &str = r"10-15
+12-13
+20-21
+19-23
+30-37";
 
     #[test]
     pub fn test1() {
@@ -36,35 +35,22 @@ mod tests {
         assert_eq!(pos_to_num(&xs, xs.len() as u64, 12), 1);
     }
 
-    //#[test]
+    #[test]
     pub fn test2() {
-        // let r = solve2(EXAMPLE2_INPUT);
-        // assert_eq!(, r);
+        let r = solve2(EXAMPLE2_INPUT);
+        assert_eq!(30, r);
     }
-
-    //#[test]
-    // pub fn test3() {
-    //     let r = solve3(EXAMPLE3_INPUT);
-    //     assert_eq!("", r);
-    // }
-
-    //#[test]
-    // pub fn test4() {
-    //     let r = solve3(EXAMPLE4_INPUT);
-    //     assert_eq!("", r);
-    // }
 }
 
 fn parse(input_file: &str) -> Vec<u64> {
-    let xs = input_file
+    input_file
         .lines()
-        .flat_map(|x| parse_utils::parse_numbers(x))
-        .collect::<Vec<_>>();
-    xs
+        .flat_map(parse_utils::parse_numbers)
+        .collect::<Vec<_>>()
 }
 
 fn pos_to_num(xs: &[u64], n: u64, pos: u64) -> u64 {
-    if (pos % (n + 1)) == 0 {
+    if pos.is_multiple_of(n + 1) {
         return 1;
     }
     let pos = pos % (n + 1);
@@ -82,21 +68,73 @@ fn solve(input_file: &str) -> u64 {
     pos_to_num(&xs, xs.len() as u64, 2025u64)
 }
 
-fn main() {
-    // tests::test1();
-    tests::test2();
-    // tests::test3();
-    // tests::test4();
+fn parse2(input_file: &str) -> Vec<(u64, u64)> {
+    input_file
+        .lines()
+        .map(|x| {
+            let ys = parse_utils::parse_numbers(x);
+            (ys[0], ys[1])
+        })
+        .collect::<Vec<_>>()
+}
 
+fn pos_to_num2(xs: &[(u64, u64)], pos: u64) -> u64 {
+    let n = xs.iter().map(|&(a, b)| 1 + b - a).sum::<u64>();
+    let mut pos = pos % (n + 1);
+    if pos == 0 {
+        return 1;
+    }
+    pos -= 1;
+
+    let mut clockwise = true;
+    let mut i = 0;
+    loop {
+        if clockwise {
+            if pos < (1 + xs[i].1 - xs[i].0) {
+                return xs[i].0 + pos;
+            } else {
+                pos -= 1 + xs[i].1 - xs[i].0;
+            }
+            i += 2;
+        } else {
+            if pos < (1 + xs[i].1 - xs[i].0) {
+                return xs[i].1 - pos;
+            } else {
+                pos -= 1 + xs[i].1 - xs[i].0;
+            }
+            i -= 2;
+        }
+        if i >= xs.len() {
+            clockwise = !clockwise;
+            if xs.len().is_multiple_of(2) {
+                i = xs.len() - 1;
+            } else {
+                i = xs.len() - 2;
+            }
+        }
+    }
+}
+
+fn solve2(input_file: &str) -> u64 {
+    let xs = parse2(input_file);
+    pos_to_num2(&xs, 20252025)
+}
+
+fn solve3(input_file: &str) -> u64 {
+    let xs = parse2(input_file);
+    pos_to_num2(&xs, 202520252025)
+}
+
+fn main() {
     let input_file = fs::read_to_string("everybody_codes_e2025_q13_p1.txt").unwrap();
     let r = solve(&input_file);
     println!("Part 1: {}", r);
 
-    // let input_file = fs::read_to_string("everybody_codes_e2025_q0?_p2.txt").unwrap();
-    // let r = solve2(&input_file);
-    // println!("Part 2: {}", r);
+    let input_file = fs::read_to_string("everybody_codes_e2025_q13_p2.txt").unwrap();
+    let r = solve2(&input_file);
+    println!("Part 2: {}", r);
 
-    // let input_file = fs::read_to_string("everybody_codes_e2025_q0?_p3.txt").unwrap();
-    // let r = solve3(&input_file);
-    // println!("Part 3: {}", r);
+    let input_file = fs::read_to_string("everybody_codes_e2025_q13_p3.txt").unwrap();
+    let r = solve3(&input_file);
+    println!("Part 3: {}", r);
 }
